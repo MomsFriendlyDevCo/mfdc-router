@@ -16,8 +16,9 @@ gulp.task('build', function () {
 				.replace(/\/\/ STOPIF angular[\s\S]*/m, '')
 				.replace(/^/mg, '\t') // Indent all
 		))
-		.pipe(replace(/^.*require\(.*\);\s+$/gm, ''))
+		.pipe(replace(/^.*require\(.+?\);\s*$/gm, ''))
 		.pipe(replace(/^.*module\.exports = .*$/gm, ''))
+		.pipe(replace(/\n{3,}/g, '\n'))
 		.pipe(replace(/setTimeout\(/, '$timeout('))
 		.pipe(replace(/\$q.promise/g, '$q'))
 		.pipe(replace(/\/\/ INCLUDEIF angular: (.+?) \/\//g, '$1'))

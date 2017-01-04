@@ -9,9 +9,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 * @date 2016-11-10
 */
 
-angular.module('app').service('$router', function ($location, $q, $rootScope) {
-	var _ = require('lodash');
-
+angular.module('angular-mfdc-router', []).service('$router', function ($location, $q, $rootScope) {
 	var router = this;
 	router.routes = [];
 	router.path = null; // The current path portion of the route
@@ -79,11 +77,11 @@ angular.module('app').service('$router', function ($location, $q, $rootScope) {
 	router.tokenRules = {}; // Token validators (see router.tokenRule)
 
 	router.redirect = function (url) {
-		// INCLUDEIF angular: $location.path(url);
+		$location.path(url);
 	};
 
 	router.setHash = function (hash) {
-		// INCLUDEIF angular: location.hash = (hash.startsWith('#') ? '' : '#') + hash;
+		location.hash = (hash.startsWith('#') ? '' : '#') + hash;
 	};
 
 	// Rule instance {{{
@@ -452,7 +450,7 @@ angular.module('app').service('$router', function ($location, $q, $rootScope) {
 		var safePath = path.replace(/\/:[a-z0-9_-]+(\?)?/gi, function (all, optional) {
 			return '!!!CAPTURE ' + (optional ? 'OPTIONAL' : 'REQUIRED') + '!!!';
 		}) // Change all :something? markers into tokens
-		.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\// INCLUDE src/mfdc-router.js //') // Convert all remaining content into a 'safe' string (regexp encoding)
+		.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\' + String.fromCharCode(36) + '&') // Convert all remaining content into a 'safe' string (regexp encoding)
 		.replace(/!!!CAPTURE OPTIONAL!!!/g, '(\\/.+)?') // Drop the capture groups back into the expression
 		.replace(/!!!CAPTURE REQUIRED!!!/g, '(\\/.+)'); // Drop the capture groups back into the expression
 
@@ -569,12 +567,6 @@ angular.module('app').service('$router', function ($location, $q, $rootScope) {
 	};
 
 	/**
- * Alias of go()
- * @see go()
- */
-	router.redirect = router.go;
-
-	/**
  * Disable a specific warning flag or all flags by just passing `false`
  * @param {string|boolean} key Either the key of the warning to set the value of OR a boolean to set all
  * @param {boolean} [value] The new value of the key if one was specified
@@ -634,8 +626,10 @@ angular.module('app').service('$router', function ($location, $q, $rootScope) {
 		return location.hash;
 	}, function () {
 		var newHash = location.hash.replace(/^#!?/, '');
-		$router.go(newHash);
+		router.go(newHash);
 	});
+
+	return router;
 }).component('routerView', {
 	bindings: {
 		routeId: '@'
@@ -714,7 +708,7 @@ angular.module('app').service('$router', function ($location, $q, $rootScope) {
 	}
 }).run(function ($rootScope, $router, $location) {
 	// Trigger initial routing (use $applyAsync so this gets pushed to the bottom of the run() call stack)
-	$rootScope.$applyAsync(function (_) {
+	$rootScope.$applyAsync(function () {
 		return $router.go($location.path());
 	});
 });

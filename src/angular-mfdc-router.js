@@ -6,15 +6,17 @@
 */
 
 angular
-	.module('app')
+	.module('angular-mfdc-router', [])
 	.service('$router', function($location, $q, $rootScope) {
 		// INCLUDE src/mfdc-router.js //
 
 		// Setup a watcher on the main window location hash
 		$rootScope.$watch(_=> location.hash, function() {
 			var newHash = location.hash.replace(/^#!?/, '');
-			$router.go(newHash);
+			router.go(newHash);
 		});
+
+		return router;
 	})
 	.component('routerView', {
 		bindings: {
@@ -86,5 +88,5 @@ angular
 	})
 	.run(function($rootScope, $router, $location) {
 		// Trigger initial routing (use $applyAsync so this gets pushed to the bottom of the run() call stack)
-		$rootScope.$applyAsync(_=> $router.go($location.path()));
+		$rootScope.$applyAsync(()=> $router.go($location.path()));
 	})

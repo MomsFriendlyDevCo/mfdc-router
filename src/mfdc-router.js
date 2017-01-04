@@ -64,11 +64,11 @@ module.exports = function() {
 	router.tokenRules = {};  // Token validators (see router.tokenRule)
 
 	router.redirect = function(url) {
-		// INCLUDEIF angular: $location.path(url);
+		// INCLUDEIF angular: $location.path(url); //
 	};
 
 	router.setHash = function(hash) {
-		// INCLUDEIF angular: location.hash = (hash.startsWith('#') ? '' : '#') + hash;
+		// INCLUDEIF angular: location.hash = (hash.startsWith('#') ? '' : '#') + hash; //
 	};
 
 	// Rule instance {{{
@@ -429,7 +429,7 @@ module.exports = function() {
 	router.pathToRegExp = function(path) {
 		var safePath = path
 			.replace(/\/:[a-z0-9_-]+(\?)?/gi, (all, optional) => '!!!CAPTURE ' + (optional ? 'OPTIONAL' : 'REQUIRED') + '!!!') // Change all :something? markers into tokens
-			.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&') // Convert all remaining content into a 'safe' string (regexp encoding)
+			.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\' + String.fromCharCode(36) + '&') // Convert all remaining content into a 'safe' string (regexp encoding)
 			.replace(/!!!CAPTURE OPTIONAL!!!/g, '(\\/.+)?') // Drop the capture groups back into the expression
 			.replace(/!!!CAPTURE REQUIRED!!!/g, '(\\/.+)') // Drop the capture groups back into the expression
 
@@ -529,12 +529,6 @@ module.exports = function() {
 				})
 		});
 	};
-
-	/**
-	* Alias of go()
-	* @see go()
-	*/
-	router.redirect = router.go;
 
 	/**
 	* Disable a specific warning flag or all flags by just passing `false`
