@@ -21,12 +21,12 @@ angular.module('angular-mfdc-router', []).service('$router', function ($location
 	router.sort = {
 		enabled: true,
 		isSorted: false,
-		keyOrder: [{ key: '_priority', reverse: true }, { key: '_pathHuman', charOrder: 'abcdefghijklmnopqrstuvwxyz0123456789:/-_', fallback: function fallback(_) {
+		keyOrder: [{ key: '_priority', reverse: true }, { key: '_pathHuman', charOrder: 'abcdefghijklmnopqrstuvwxyz0123456789:/-_', fallback: function fallback() {
 				return String.fromCharCode(65000);
-			} }, { key: '_path', charOrder: 'abcdefghijklmnopqrstuvwxyz0123456789:/-_', fallback: function fallback(_) {
+			} }, { key: '_path', charOrder: 'abcdefghijklmnopqrstuvwxyz0123456789:/-_', fallback: function fallback() {
 				return String.fromCharCode(65000);
 			} }],
-		// Sorter function {{{
+		// Sorter {{{
 		// Code taken in-part from https://github.com/hash-bang/string-sort (author of this module is the author of string-sort)
 		// See that module for a test kit and documentation
 		// TL;DR - this is a [Schwartzian Transform](https://en.wikipedia.org/wiki/Schwartzian_transform)
@@ -362,9 +362,9 @@ angular.module('angular-mfdc-router', []).service('$router', function ($location
 					$q.all(_this._requires.map(function (r) {
 						return r();
 					})) // Run each factory function to crack open the promise inside then resolve it
-					.then(function (_) {
+					.then(function () {
 						return resolve();
-					}).catch(function (_) {
+					}).catch(function () {
 						return reject();
 					});
 				} else {
@@ -487,11 +487,11 @@ angular.module('angular-mfdc-router', []).service('$router', function ($location
 		return $q(function (mainResolve, mainReject) {
 			// Compose a resolver by creating a series chain of rules (each rule is the parent of the previous using .then())
 			var resolver = router.routes.reduce(function (chain, rule) {
-				return chain.then(function (_) {
+				return chain.then(function () {
 					return $q(function (ruleResolve, ruleReject) {
 						// For each rule return a promise that is upside down - if it resolves, the rule matches and it should call the mainResolve, if it DOESN'T it should resolve anyway so the next one can run
 
-						rule.matches(path).then(function (_) {
+						rule.matches(path).then(function () {
 							return mainResolve(rule);
 						}) // If the rule matches fire the mainResolver which also stops this chain being processed
 						.catch(function (err) {
@@ -503,7 +503,7 @@ angular.module('angular-mfdc-router', []).service('$router', function ($location
 						}); // If it errored see if its a valid complaint (if so reject it via mainReject) else continue on
 					});
 				});
-			}, $q.resolve()).then(function (_) {
+			}, $q.resolve()).then(function () {
 				return mainReject('Nothing matches');
 			});
 		});
@@ -622,7 +622,7 @@ angular.module('angular-mfdc-router', []).service('$router', function ($location
 	};
 
 	// Setup a watcher on the main window location hash
-	$rootScope.$watch(function (_) {
+	$rootScope.$watch(function () {
 		return location.hash;
 	}, function () {
 		var newHash = location.hash.replace(/^#!?/, '');
@@ -638,9 +638,7 @@ angular.module('angular-mfdc-router', []).service('$router', function ($location
 		var $ctrl = this;
 		$ctrl.$router = $router;
 
-		$scope.$watch(function () {
-			return $router.current._id;
-		}, function (newVer, oldVer) {
+		$scope.$watch('$ctrl.$router.current._id', function (newVer, oldVer) {
 			if (!$router.current) return; // Main route not loaded yet
 			var id = $ctrl.routeId || 'main';
 
@@ -692,7 +690,7 @@ angular.module('angular-mfdc-router', []).service('$router', function ($location
 					// Destroy the previous component
 					$timeout(function () {
 						var scope = elementChild.scope();
-						scope.$apply(function (_) {
+						scope.$apply(function () {
 							scope.$destroy();
 							createView();
 						});
