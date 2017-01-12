@@ -15,10 +15,10 @@ module.exports = function() {
 		isSorted: false,
 		keyOrder: [
 			{key: '_priority', reverse: true},
-			{key: '_pathHuman', charOrder: 'abcdefghijklmnopqrstuvwxyz0123456789:/-_', fallback: _=> String.fromCharCode(65000)},
-			{key: '_path', charOrder: 'abcdefghijklmnopqrstuvwxyz0123456789:/-_', fallback: _=> String.fromCharCode(65000)},
+			{key: '_pathHuman', charOrder: 'abcdefghijklmnopqrstuvwxyz0123456789:/-_', fallback: ()=> String.fromCharCode(65000)},
+			{key: '_path', charOrder: 'abcdefghijklmnopqrstuvwxyz0123456789:/-_', fallback: ()=> String.fromCharCode(65000)},
 		],
-		// Sorter function {{{
+		// Sorter {{{
 		// Code taken in-part from https://github.com/hash-bang/string-sort (author of this module is the author of string-sort)
 		// See that module for a test kit and documentation
 		// TL;DR - this is a [Schwartzian Transform](https://en.wikipedia.org/wiki/Schwartzian_transform)
@@ -347,8 +347,8 @@ module.exports = function() {
 				if (!this._requires.length || requires === false) return resolve();
 
 				$q.all(this._requires.map(r => r())) // Run each factory function to crack open the promise inside then resolve it
-					.then(_=>resolve())
-					.catch(_=>reject())
+					.then(()=>resolve())
+					.catch(()=>reject())
 			} else {
 				reject();
 			}
@@ -463,15 +463,15 @@ module.exports = function() {
 
 		return $q.promise(function(mainResolve, mainReject) { // Compose a resolver by creating a series chain of rules (each rule is the parent of the previous using .then())
 			var resolver = router.routes.reduce((chain, rule) => {
-				return chain.then(_=> $q.promise((ruleResolve, ruleReject) => {
+				return chain.then(()=> $q.promise((ruleResolve, ruleReject) => {
 					// For each rule return a promise that is upside down - if it resolves, the rule matches and it should call the mainResolve, if it DOESN'T it should resolve anyway so the next one can run
 
 					rule.matches(path)
-						.then(_=> mainResolve(rule)) // If the rule matches fire the mainResolver which also stops this chain being processed
+						.then(()=> mainResolve(rule)) // If the rule matches fire the mainResolver which also stops this chain being processed
 						.catch(err => { if (err) { mainReject(err) } else { ruleResolve() } }) // If it errored see if its a valid complaint (if so reject it via mainReject) else continue on
 				}));
 			}, $q.resolve())
-				.then(_=> mainReject('Nothing matches'))
+				.then(()=> mainReject('Nothing matches'))
 		})
 	};
 
@@ -581,6 +581,6 @@ module.exports = function() {
 		return router;
 	};
 
-	// STOPIF angular hello
+	// STOPIF angular
 	return router;
 };

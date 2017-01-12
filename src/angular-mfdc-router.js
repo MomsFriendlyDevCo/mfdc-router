@@ -11,7 +11,7 @@ angular
 		// INCLUDE src/mfdc-router.js //
 
 		// Setup a watcher on the main window location hash
-		$rootScope.$watch(_=> location.hash, function() {
+		$rootScope.$watch(()=> location.hash, function() {
 			var newHash = location.hash.replace(/^#!?/, '');
 			router.go(newHash);
 		});
@@ -26,7 +26,7 @@ angular
 			var $ctrl = this;
 			$ctrl.$router = $router;
 
-			$scope.$watch(()=> $router.current._id, function(newVer, oldVer) {
+			$scope.$watch('$ctrl.$router.current._id', function(newVer, oldVer) {
 				if (!$router.current) return; // Main route not loaded yet
 				var id = $ctrl.routeId || 'main';
 
@@ -71,7 +71,7 @@ angular
 					if (elementChild.scope) { // Destroy the previous component
 						$timeout(()=> {
 							var scope = elementChild.scope();
-							scope.$apply(_=> {
+							scope.$apply(()=> {
 								scope.$destroy();
 								createView();
 							});

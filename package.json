@@ -1,6 +1,6 @@
 {
   "name": "mfdc-router",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "A non-annoying, exceedingly simple but extremely powerful router using a chainable syntax (for Angular)",
   "main": "dist/angular-mfdc-router.js",
   "scripts": {
