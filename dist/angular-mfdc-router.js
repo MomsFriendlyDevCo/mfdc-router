@@ -520,7 +520,7 @@ angular.module('angular-mfdc-router', []).service('$router', function ($location
  */
 	router.go = function (rawPath, params) {
 		if (!rawPath) rawPath = '/';
-		// INCLUDEIF: angular: $rootScope.$broadcast('routerStart', router.current);
+		$rootScope.$broadcast('$routerStart', router.current);
 		return $q(function (resolve, reject) {
 			// Break the path into the path portion + query string
 			var urlInfo = /^(.*?)(\?.*)?$/.exec(rawPath);
@@ -547,7 +547,7 @@ angular.module('angular-mfdc-router', []).service('$router', function ($location
 
 				resolve(rule);
 				// If we're not changing the component but we ARE changing the params we need to fire routerSuccess anyway
-				// INCLUDEIF angular: if (previousRule && _.isEqual(previousRule.views, rule.views)) $rootScope.$broadcast('routerSuccess', router.current);
+				if (previousRule && _.isEqual(previousRule.views, rule.views)) $rootScope.$broadcast('$routerSuccess', router.current);
 
 				switch (router.current._action) {
 					case 'views':
@@ -560,7 +560,7 @@ angular.module('angular-mfdc-router', []).service('$router', function ($location
 						throw new Error('Unknown router action: ' + router.current._action);
 				}
 			}).catch(function (err) {
-				// INCLUDEIF angular: $rootScope.$broadcast('routerError', err);
+				$rootScope.$broadcast('routerError', err);
 				reject(err);
 			});
 		});

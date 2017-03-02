@@ -64,11 +64,11 @@ module.exports = function() {
 	router.tokenRules = {};  // Token validators (see router.tokenRule)
 
 	router.redirect = function(url) {
-		// INCLUDEIF angular: $location.path(url); //
+		// INCLUDEIF angular: $location.path(url);
 	};
 
 	router.setHash = function(hash) {
-		// INCLUDEIF angular: location.hash = (hash.startsWith('#') ? '' : '#') + hash; //
+		// INCLUDEIF angular: location.hash = (hash.startsWith('#') ? '' : '#') + hash;
 	};
 
 	// Rule instance {{{
@@ -486,7 +486,7 @@ module.exports = function() {
 	*/
 	router.go = function(rawPath, params) {
 		if (!rawPath) rawPath = '/';
-		// INCLUDEIF: angular: $rootScope.$broadcast('routerStart', router.current);
+		// INCLUDEIF angular: $rootScope.$broadcast('$routerStart', router.current);
 		return $q.promise(function(resolve, reject) {
 			// Break the path into the path portion + query string
 			var urlInfo = /^(.*?)(\?.*)?$/.exec(rawPath);
@@ -510,7 +510,7 @@ module.exports = function() {
 
 					resolve(rule);
 					// If we're not changing the component but we ARE changing the params we need to fire routerSuccess anyway
-					// INCLUDEIF angular: if (previousRule && _.isEqual(previousRule.views, rule.views)) $rootScope.$broadcast('routerSuccess', router.current);
+					// INCLUDEIF angular: if (previousRule && _.isEqual(previousRule.views, rule.views)) $rootScope.$broadcast('$routerSuccess', router.current);
 
 					switch (router.current._action) {
 						case 'views':
