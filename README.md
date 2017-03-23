@@ -2,7 +2,7 @@ MFDC-Router / Angular-MFDC-Router
 =================================
 A non-annoying, exceedingly simple but extremely powerful router using a chainable syntax.
 
-This module is primerily designed to work with Angular but it should be modular enough to also work with Node - see [testkit](test/).
+This module is primarily designed to work with Angular but it should be modular enough to also work with Node - see [testkit](test/).
 
 
 ```javascript
@@ -39,6 +39,42 @@ Why?
 Because [angular-ui-router](https://github.com/angular-ui/ui-router) is too bloody complicated, difficult to grok and the documentation sucks.
 
 This project is an attempt to simplify routing to its absolute bare essentials using a sane syntax with sensible examples.
+
+
+Installation
+------------
+The following instructions detail how to get MFDC-Router working for an Angular setup:
+
+1. Grab the NPM
+
+```shell
+npm install --save mfdc-router
+```
+
+
+2. Install the required script somewhere in your build chain or include it in a HTML header:
+
+```html
+<script src="/libs/mfdc-router/dist/angular-mfdc-router.min.js"/>
+```
+
+
+3. Include the router in your main `angular.module()` call:
+
+```javascript
+var app = angular.module('app', ['angular-mfdc-router'])
+```
+
+
+4. Start using the router by defining paths:
+
+```javascript
+app
+	.run($router => $router.when('/foo').component('fooCtrl'))
+	.component('fooCtrl', {
+		// ... //
+	})
+```
 
 
 Common usage
