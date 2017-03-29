@@ -48,14 +48,14 @@ The following instructions detail how to get MFDC-Router working for an Angular 
 1. Grab the NPM
 
 ```shell
-npm install --save mfdc-router
+npm install --save @momsfriendlydevco/router
 ```
 
 
 2. Install the required script somewhere in your build chain or include it in a HTML header:
 
 ```html
-<script src="/libs/mfdc-router/dist/angular-mfdc-router.min.js"/>
+<script src="/libs/@momsfriendlydevco/router/dist/angular-mfdc-router.min.js"/>
 ```
 
 
