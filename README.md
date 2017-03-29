@@ -1,5 +1,5 @@
-MFDC-Router / Angular-MFDC-Router
-=================================
+@MomsFriendlyDevCo/Router / Angular-MFDC-Router
+===============================================
 A non-annoying, exceedingly simple but extremely powerful router using a chainable syntax.
 
 This module is primarily designed to work with Angular but it should be modular enough to also work with Node - see [testkit](test/).
