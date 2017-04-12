@@ -8,7 +8,7 @@
 angular
 	.module('angular-mfdc-router', [])
 	.service('$router', function($location, $q, $rootScope) {
-		// INCLUDE src/mfdc-router.js //
+		// @include ./src/mfdc-router.js
 
 		// Setup a watcher on the main window location hash
 		$rootScope.$watch(()=> location.hash, function() {

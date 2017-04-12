@@ -520,7 +520,9 @@ angular.module('angular-mfdc-router', []).service('$router', function ($location
  */
 	router.go = function (rawPath, params) {
 		if (!rawPath) rawPath = '/';
+
 		$rootScope.$broadcast('$routerStart', router.current);
+
 		return $q(function (resolve, reject) {
 			// Break the path into the path portion + query string
 			var urlInfo = /^(.*?)(\?.*)?$/.exec(rawPath);

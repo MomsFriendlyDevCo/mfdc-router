@@ -64,11 +64,21 @@ module.exports = function() {
 	router.tokenRules = {};  // Token validators (see router.tokenRule)
 
 	router.redirect = function(url) {
-		// INCLUDEIF angular: $location.path(url);
+		// @ifdef angular
+		$location.path(url);
+		// @endif
+		// @ifndef angular
+		throw new Error('router.redirect() needs overriding with whatever redirection scheme you are using');
+		// @endif
 	};
 
 	router.setHash = function(hash) {
-		// INCLUDEIF angular: location.hash = (hash.startsWith('#') ? '' : '#') + hash;
+		// @ifdef angular
+		location.hash = (hash.startsWith('#') ? '' : '#') + hash;
+		// @endif
+		// @ifndef angular
+		throw new Error('router.setHash() needs overriding with whatever redirection scheme you are using');
+		// @endif
 	};
 
 	// Rule instance {{{
@@ -486,7 +496,11 @@ module.exports = function() {
 	*/
 	router.go = function(rawPath, params) {
 		if (!rawPath) rawPath = '/';
-		// INCLUDEIF angular: $rootScope.$broadcast('$routerStart', router.current);
+
+		// @ifdef angular
+		$rootScope.$broadcast('$routerStart', router.current);
+		// @endif
+
 		return $q.promise(function(resolve, reject) {
 			// Break the path into the path portion + query string
 			var urlInfo = /^(.*?)(\?.*)?$/.exec(rawPath);
@@ -510,7 +524,9 @@ module.exports = function() {
 
 					resolve(rule);
 					// If we're not changing the component but we ARE changing the params we need to fire routerSuccess anyway
-					// INCLUDEIF angular: if (previousRule && _.isEqual(previousRule.views, rule.views)) $rootScope.$broadcast('$routerSuccess', router.current);
+					// @ifdef angular
+					if (previousRule && _.isEqual(previousRule.views, rule.views)) $rootScope.$broadcast('$routerSuccess', router.current);
+					// @endif
 
 					switch (router.current._action) {
 						case 'views':
@@ -524,7 +540,9 @@ module.exports = function() {
 					}
 				})
 				.catch(err => {
-					// INCLUDEIF angular: $rootScope.$broadcast('routerError', err);
+					// @ifdef angular
+					$rootScope.$broadcast('routerError', err);
+					// @endif
 					reject(err);
 				})
 		});
@@ -581,6 +599,7 @@ module.exports = function() {
 		return router;
 	};
 
-	// STOPIF angular
+// @ifndef angular
 	return router;
 };
+// @endif
