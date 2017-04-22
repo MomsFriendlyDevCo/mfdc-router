@@ -152,14 +152,26 @@ For example if the rule has the path `/widgets/:id` and the current URL is `/wid
 
 $router.setQuery(key, [val])
 ----------------------------
-Return the current URL with the rewritten query portion of the URL.
+Set the query string and force a re-evaluate operation.
 
-This parameter takes two parameters. If both are specified the key specified will be simply set in `$router.query`. If the second parameter is omitted the key is removed. If no parameters are passed the query is blanked.
+This function can be called in a variety of ways:
 
-```html
-<a ng-click="$router.setQuery('foo', 'bar')">Go to #/?foo=bar</a>
-<a ng-click="$router.setQuery('foo')">Go to #/</a>
-<a ng-click="$router.setQuery()">Go to #/</a>
+* If `key` is empty or equal to `{}` the entire query is removed
+* If `key` is an object the new object will completely overwrite any existing query values
+* If `key` is a string and `val` is set, just one query portion will be set
+* If `key` is a string and `val` is undefined (or omitted) the given query key will be removed.
+
+```javascript
+// Set the entire query string (i.e. remove ALL queries excpect the ones given in the object)
+$router.setQuery({foo: 'foo!'})
+
+// Set just the 'bar' component of the query (i.e. if anything else exists leave it as is)
+$router.setQuery('bar', 'bar!')
+
+// Remove the 'baz' component if its is set, leaving everything else in place
+$router.setQuery('baz', undefined);
+// OR
+$router.setQuery('baz');
 ```
 
 $router.tokenRule(token, validator)

@@ -581,16 +581,32 @@ module.exports = function() {
 
 	/**
 	* Set the query portion of the URL and trigger a renaviate operation
-	* @param {string} key The key portion of the query to set. If this is falsy all query items are removed
+	* @param {string|Object|undefined} key The key portion of the query to set. If this is falsy all query items are removed. If this is an object the entire query is overwritten. If this is undefined the entire query is removed (equivelent to `{}`)
 	* @param {mixed} [val] The value of the router query to set, if this is undefined it is removed
 	* @return {router} This chainable router object
+	*
+	* @example
+	* // Set the entire query string (i.e. remove ALL queries excpect the ones given in the object)
+	* $router.setQuery({foo: 'foo!'})
+	* @example
+	* // Set just the 'bar' component of the query (i.e. if anything else exists leave it as is)
+	* $router.setQuery('bar', 'bar!')
+	* @example
+	* // Remove the 'baz' component if its is set, leaving everything else in place
+	* $router.setQuery('baz', undefined);
+	* // OR
+	* $router.setQuery('baz');
 	*/
 	router.setQuery = (key, val) => {
-		var newQuery = key ? _.clone(router.query) : {};
+		var newQuery;
 
-		if (val === undefined) {
+		if (val === undefined || _.isEmpty(key)) {
+			newQuery = key ? _.clone(router.query) : {};
 			delete newQuery[key];
+		} else if (_.isObject(key)) {
+			newQuery = key;
 		} else {
+			newQuery = key ? _.clone(router.query) : {};
 			newQuery[key] = val;
 		}
 
