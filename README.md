@@ -307,6 +307,8 @@ $router.when('/foo')
 
 **NOTE**: Promises only ever resolve _once_ so its important to pass in a function which _creates a new promise_ (a Promise Factory pattern). This was the factory is instanciated whenever the rule is checked with a new state each time. The Router will warn if it is passed a Promise directly rather than a function which returns a promise.
 
+If you pass in a non-factory function the return value must be a boolean `true` or `false` to map onto `Promise.resolve()` / `Promise.reject()` respectively. All other return values (strings, objects etc.) will be passed to `Promise.all()` to be resolved which generally doesnt do what you want it to.
+
 
 RouterRule.title(title)
 -----------------------

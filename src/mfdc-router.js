@@ -356,9 +356,18 @@ module.exports = function() {
 			) {
 				if (!this._requires.length || requires === false) return resolve();
 
-				$q.all(this._requires.map(r => r())) // Run each factory function to crack open the promise inside then resolve it
-					.then(()=>resolve())
-					.catch(()=>reject())
+				$q.all(this._requires.map(r => {
+					var factoryReturn = r();
+					if (factoryReturn === true) { // Respect true/false returns and map them to promise resolve / rejects
+						return $q.resolve();
+					} else if (factoryReturn === false) {
+						return $q.reject();
+					} else { // Everything else - throw at $q.all() and let it resolve them
+						return factoryReturn;
+					}
+				})) // Run each factory function to crack open the promise inside then resolve it
+					.then(()=> resolve())
+					.catch(()=> reject())
 			} else {
 				reject();
 			}
