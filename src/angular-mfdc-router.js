@@ -86,7 +86,3 @@ angular
 			});
 		},
 	})
-	.run(function($rootScope, $router, $location) {
-		// Trigger initial routing (use $applyAsync so this gets pushed to the bottom of the run() call stack)
-		$rootScope.$applyAsync(()=> $router.go($location.path()));
-	})

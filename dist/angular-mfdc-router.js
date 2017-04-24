@@ -731,9 +731,4 @@ angular.module('angular-mfdc-router', []).service('$router', function ($location
 			// }}}
 		});
 	}
-}).run(function ($rootScope, $router, $location) {
-	// Trigger initial routing (use $applyAsync so this gets pushed to the bottom of the run() call stack)
-	$rootScope.$applyAsync(function () {
-		return $router.go($location.path());
-	});
 });
