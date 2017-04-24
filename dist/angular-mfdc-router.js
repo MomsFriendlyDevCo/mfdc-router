@@ -668,13 +668,13 @@ angular.module('angular-mfdc-router', []).service('$router', function ($location
 						var componentName = $router.current.views[id].content.replace(/([A-Z])/g, '_$1').toLowerCase(); // Convert to kebab-case
 						$element.html($compile('<' + componentName + '></' + componentName + '>')($rootScope.$new()));
 						$timeout(function () {
-							return $rootScope.$broadcast('$routerSuccess', $router.current);
+							return $rootScope.$broadcast('$routerSuccess', $router.current, id);
 						});
 						break;
 					case 'template':
 						$element.html($compile($router.current.views[id].content)($rootScope.$new()));
 						$timeout(function () {
-							return $rootScope.$broadcast('$routerSuccess', $router.current);
+							return $rootScope.$broadcast('$routerSuccess', $router.current, id);
 						});
 						break;
 					case 'templateUrl':
@@ -689,7 +689,7 @@ angular.module('angular-mfdc-router', []).service('$router', function ($location
 							return $element.html($compile(data)($rootScope.$new()));
 						}).then(function () {
 							return $timeout(function () {
-								return $rootScope.$broadcast('$routerSuccess', $router.current);
+								return $rootScope.$broadcast('$routerSuccess', $router.current, id);
 							});
 						});
 						break;

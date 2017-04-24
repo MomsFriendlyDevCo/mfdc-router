@@ -1,6 +1,6 @@
 {
   "name": "@momsfriendlydevco/router",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "A non-annoying, exceedingly simple but extremely powerful router using a chainable syntax (for Angular)",
   "main": "dist/angular-mfdc-router.js",
   "scripts": {

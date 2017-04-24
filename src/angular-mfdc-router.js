@@ -37,11 +37,11 @@ angular
 						case 'component':
 							var componentName = $router.current.views[id].content.replace(/([A-Z])/g, '_$1').toLowerCase(); // Convert to kebab-case
 							$element.html($compile('<' + componentName + '></' + componentName + '>')($rootScope.$new()));
-							$timeout(()=> $rootScope.$broadcast('$routerSuccess', $router.current));
+							$timeout(()=> $rootScope.$broadcast('$routerSuccess', $router.current, id));
 							break;
 						case 'template':
 							$element.html($compile($router.current.views[id].content)($rootScope.$new()));
-							$timeout(()=> $rootScope.$broadcast('$routerSuccess', $router.current));
+							$timeout(()=> $rootScope.$broadcast('$routerSuccess', $router.current, id));
 							break;
 						case 'templateUrl':
 							// Try to fetch from $templateCache then $http
@@ -55,7 +55,7 @@ angular
 									.catch(reject)
 							})
 								.then(data => $element.html($compile(data)($rootScope.$new())))
-								.then(() => $timeout(()=> $rootScope.$broadcast('$routerSuccess', $router.current)))
+								.then(() => $timeout(()=> $rootScope.$broadcast('$routerSuccess', $router.current, id)))
 							break;
 						default:
 							// if ($router.current.views[id].method) { // Throw an error if !undefined (if undefined, just clear up and do nothing)
