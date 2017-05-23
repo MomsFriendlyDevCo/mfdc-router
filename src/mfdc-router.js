@@ -525,7 +525,13 @@ module.exports = function() {
 					_.forEach(router.params, (v, k) => delete router.params[k]);
 					if (_.isObject(params)) _.assign(router.params, params); // Inject from this function call if passed any
 					_.assign(router.params, rule.extractParams(path)); // Inject from the URL tokens
-					_.assign(router.params, rule._params); // Inject from RouterRule._params object
+					_.assign(router.params, _.mapValues(rule._params, (v, k) => { // Inject from RouterRule._params object (unwrap functions if the parameter value needs evaluating)
+						if (_.isFunction(v)) {
+							return v();
+						} else {
+							return v;
+						}
+					}));
 
 					// Clear out + rebuild router.query also
 					_.forEach((v, k) => delete router.query[k]);
@@ -550,7 +556,7 @@ module.exports = function() {
 				})
 				.catch(err => {
 					// @ifdef angular
-					$rootScope.$broadcast('routerError', err);
+					$rootScope.$broadcast('$routerError', err);
 					// @endif
 					reject(err);
 				})

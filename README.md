@@ -284,6 +284,7 @@ Tests a given path against the rule. This will return a boolean if the rule matc
 RouterRule.params(Object|id, [value])
 -------------------------------------
 Set additional parameters be to populated into `$router.params` if this rule matches.
+If `value` is a function it is executed when the rule matches and its return value used to populate the parameter. This can be useful if you need to perform some calculation before passing the parameter downstream.
 
 RouterRule.path(path)
 ---------------------
