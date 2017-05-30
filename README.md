@@ -109,13 +109,13 @@ $router.when('/super-secure-area')
 // Listen for routing events and perform an action when the page has changed
 
 // Before we navigate...
-$rootScope.$on('$routerStart', _=> /* Do something */)
+$rootScope.$on('$routerStart', ()=> /* Do something */)
 
 // After we navigated
-$rootScope.$on('$routerSuccess', _=> /* Do something */)
+$rootScope.$on('$routerSuccess', ()=> /* Do something */)
 
 // After we navigated and something went wrong
-$rootScope.$on('$routerError', _=> /* Do something */)
+$rootScope.$on('$routerError', ()=> /* Do something */)
 ```
 
 
@@ -347,3 +347,28 @@ Router view can also take the following options:
 | Option     | Type   | Default  | Description                                                                              |
 |------------|--------|----------|------------------------------------------------------------------------------------------|
 | `route-id` | String | `"main"` | The ID of the route to react to. Use `RouterRule.component()` to define this in the rule |
+
+
+Events
+======
+The following events are broadcast globally and can be trapped by hooking into the `$rootScope` listener:
+
+```javascript
+$rootScope.$on('$routerStart', ()=> console.log('Routing has started!'));
+```
+
+
+$routerStart
+------------
+Called as `(currentRule)` when a routing operation starts. Note that `currentRule` is the rule we are *replacing* and we dont yet know the new rule.
+
+
+$routerSuccess
+--------------
+Called as `(newRule)` when a routing operation completes.
+This is invoked when controllers, redirects or other actions have completed.
+
+
+$routerError
+------------
+Called as `(err)` when an error occurs.
