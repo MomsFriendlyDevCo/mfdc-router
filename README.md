@@ -357,15 +357,28 @@ The following events are broadcast globally and can be trapped by hooking into t
 $rootScope.$on('$routerStart', ()=> console.log('Routing has started!'));
 ```
 
+Generally the event progression when moving from rule `Foo` to rule `Bar` is:
+
+* `$routerStart(FooRule)`
+* `$routerStartResolved(BarRule, FooRule)`
+* `$routerSuccess(FooRule, 'main')`
+
+if any error occurs `$routerError(error)` will be emitted.
+
 
 $routerStart
 ------------
 Called as `(currentRule)` when a routing operation starts. Note that `currentRule` is the rule we are *replacing* and we dont yet know the new rule.
 
 
+$routerStartResolved
+---------------------
+Called as `(newRule, oldRule)` when routing after we have resolved which rule we are moving *to*.
+
+
 $routerSuccess
 --------------
-Called as `(newRule)` when a routing operation completes.
+Called as `(newRule, [id])` when a routing operation completes. ID is the invididual router component that has changed (i.e. multiple routers on the same page).
 This is invoked when controllers, redirects or other actions have completed.
 
 

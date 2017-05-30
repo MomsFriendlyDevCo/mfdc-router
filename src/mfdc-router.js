@@ -543,6 +543,11 @@ module.exports = function() {
 					if (previousRule && _.isEqual(previousRule.views, rule.views)) $rootScope.$broadcast('$routerSuccess', router.current);
 					// @endif
 
+
+					// @ifdef angular
+					$rootScope.$broadcast('$routerStartResolved', rule, previousRule);
+					// @endif
+
 					switch (router.current._action) {
 						case 'views':
 							// Do nothing - router.views[id] should be detected as changed by the downstream router-view components which should then reconfigure themselves

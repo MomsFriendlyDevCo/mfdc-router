@@ -567,6 +567,8 @@ angular.module('angular-mfdc-router', []).service('$router', function ($location
 				// If we're not changing the component but we ARE changing the params we need to fire routerSuccess anyway
 				if (previousRule && _.isEqual(previousRule.views, rule.views)) $rootScope.$broadcast('$routerSuccess', router.current);
 
+				$rootScope.$broadcast('$routerStartResolved', rule, previousRule);
+
 				switch (router.current._action) {
 					case 'views':
 						// Do nothing - router.views[id] should be detected as changed by the downstream router-view components which should then reconfigure themselves
