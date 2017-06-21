@@ -630,7 +630,7 @@ module.exports = function() {
 			newQuery[key] = val;
 		}
 
-		router.setHash('#' + router.path + (_.isEmpty(newQuery) ? '' : '?' + _.map(newQuery, (v, k) => k + '=' + v).join('=')));
+		router.setHash('#' + router.path + (_.isEmpty(newQuery) ? '' : '?' + _.map(newQuery, (v, k) => k + '=' + v).join('&')));
 
 		return router;
 	};

@@ -652,7 +652,7 @@ angular.module('angular-mfdc-router', []).service('$router', function ($location
 
 		router.setHash('#' + router.path + (_.isEmpty(newQuery) ? '' : '?' + _.map(newQuery, function (v, k) {
 			return k + '=' + v;
-		}).join('=')));
+		}).join('&')));
 
 		return router;
 	};
