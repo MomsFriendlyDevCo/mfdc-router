@@ -462,8 +462,8 @@ module.exports = function() {
 		var safePath = path
 			.replace(/\/:[a-z0-9_-]+(\?)?/gi, (all, optional) => '!!!CAPTURE ' + (optional ? 'OPTIONAL' : 'REQUIRED') + '!!!') // Change all :something? markers into tokens
 			.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\' + String.fromCharCode(36) + '&') // Convert all remaining content into a 'safe' string (regexp encoding)
-			.replace(/!!!CAPTURE OPTIONAL!!!/g, '(\\/.+)?') // Drop the capture groups back into the expression
-			.replace(/!!!CAPTURE REQUIRED!!!/g, '(\\/.+)') // Drop the capture groups back into the expression
+			.replace(/!!!CAPTURE OPTIONAL!!!/g, '(\\/[^\/]+)?') // Drop the capture groups back into the expression
+			.replace(/!!!CAPTURE REQUIRED!!!/g, '(\\/[^\/]+)') // Drop the capture groups back into the expression
 
 		return new RegExp('^' + safePath + String.fromCharCode(36));
 	};
