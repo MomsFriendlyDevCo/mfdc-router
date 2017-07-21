@@ -1,15 +1,11 @@
-
+'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
-/**
-* MFDC exceedingly splendid front-end router
-* Because there is an upper limit to the insanity we can cope with in angular-ui-router. We crossed that line some time ago.
-* @author Matt Carter <m@ttcarter.com>
-* @date 2016-11-10
-*/
+var _ = require('lodash');
+var $q = require('q');
 
-angular.module('angular-mfdc-router', []).service('$router', ['$location', '$q', '$rootScope', function ($location, $q, $rootScope) {
+module.exports = function () {
 	var router = this;
 	router.routes = [];
 	router.path = null; // The current path portion of the route
@@ -79,11 +75,11 @@ angular.module('angular-mfdc-router', []).service('$router', ['$location', '$q',
 	router.tokenRules = {}; // Token validators (see router.tokenRule)
 
 	router.redirect = function (url) {
-		$location.path(url);
+		throw new Error('router.redirect() needs overriding with whatever redirection scheme you are using');
 	};
 
 	router.setHash = function (hash) {
-		location.hash = (hash.startsWith('#') ? '' : '#') + hash;
+		throw new Error('router.setHash() needs overriding with whatever redirection scheme you are using');
 	};
 
 	// Rule instance {{{
@@ -348,7 +344,7 @@ angular.module('angular-mfdc-router', []).service('$router', ['$location', '$q',
   * @return {Promise} A promise which will resolve if this rule is satisfied by the given path
   */
 		this.matches = function (path, requires) {
-			return $q(function (resolve, reject) {
+			return $q.promise(function (resolve, reject) {
 				var segValues;
 
 				if ( // Matches basic pathing rules (if no path pass though)
@@ -495,11 +491,11 @@ angular.module('angular-mfdc-router', []).service('$router', ['$location', '$q',
 			router.sort.isSorted = true;
 		}
 
-		return $q(function (mainResolve, mainReject) {
+		return $q.promise(function (mainResolve, mainReject) {
 			// Compose a resolver by creating a series chain of rules (each rule is the parent of the previous using .then())
 			var resolver = router.routes.reduce(function (chain, rule) {
 				return chain.then(function () {
-					return $q(function (ruleResolve, ruleReject) {
+					return $q.promise(function (ruleResolve, ruleReject) {
 						// For each rule return a promise that is upside down - if it resolves, the rule matches and it should call the mainResolve, if it DOESN'T it should resolve anyway so the next one can run
 
 						rule.matches(path).then(function () {
@@ -532,9 +528,7 @@ angular.module('angular-mfdc-router', []).service('$router', ['$location', '$q',
 	router.go = function (rawPath, params) {
 		if (!rawPath) rawPath = '/';
 
-		$rootScope.$broadcast('$routerStart', router.current);
-
-		return $q(function (resolve, reject) {
+		return $q.promise(function (resolve, reject) {
 			// Break the path into the path portion + query string
 			var urlInfo = /^(.*?)(\?.*)?$/.exec(rawPath);
 			var path = urlInfo[1];
@@ -567,9 +561,7 @@ angular.module('angular-mfdc-router', []).service('$router', ['$location', '$q',
 
 				resolve(rule);
 				// If we're not changing the component but we ARE changing the params we need to fire routerSuccess anyway
-				if (previousRule && _.isEqual(previousRule.views, rule.views)) $rootScope.$broadcast('$routerSuccess', router.current);
 
-				$rootScope.$broadcast('$routerStartResolved', rule, previousRule);
 
 				switch (router.current._action) {
 					case 'views':
@@ -582,7 +574,6 @@ angular.module('angular-mfdc-router', []).service('$router', ['$location', '$q',
 						throw new Error('Unknown router action: ' + router.current._action);
 				}
 			}).catch(function (err) {
-				$rootScope.$broadcast('$routerError', err);
 				reject(err);
 			});
 		});
@@ -659,87 +650,5 @@ angular.module('angular-mfdc-router', []).service('$router', ['$location', '$q',
 		return router;
 	};
 
-	// Setup a watcher on the main window location hash
-	$rootScope.$watch(function () {
-		return location.hash;
-	}, function () {
-		var newHash = location.hash.replace(/^#!?/, '');
-		router.go(newHash);
-	});
-
 	return router;
-}]).component('routerView', {
-	bindings: {
-		routeId: '@'
-	},
-	controller: ['$compile', '$element', '$http', '$q', '$rootScope', '$router', '$scope', '$templateCache', '$timeout', function controller($compile, $element, $http, $q, $rootScope, $router, $scope, $templateCache, $timeout) {
-		var $ctrl = this;
-		$ctrl.$router = $router;
-
-		$scope.$watch('$ctrl.$router.current._id', function (newVer, oldVer) {
-			if (!$router.current) return; // Main route not loaded yet
-			var id = $ctrl.routeId || 'main';
-
-			if (!$router.current.views[id]) return;
-
-			var createView = function createView() {
-				switch ($router.current.views[id].method) {
-					case 'component':
-						var componentName = $router.current.views[id].content.replace(/([A-Z])/g, '_$1').toLowerCase(); // Convert to kebab-case
-						$element.html($compile('<' + componentName + '></' + componentName + '>')($rootScope.$new()));
-						$timeout(function () {
-							return $rootScope.$broadcast('$routerSuccess', $router.current, id);
-						});
-						break;
-					case 'template':
-						$element.html($compile($router.current.views[id].content)($rootScope.$new()));
-						$timeout(function () {
-							return $rootScope.$broadcast('$routerSuccess', $router.current, id);
-						});
-						break;
-					case 'templateUrl':
-						// Try to fetch from $templateCache then $http
-						$q(function (resolve, reject) {
-							var template = $templateCache.get($router.current.views[id].content);
-							if (template) return resolve(template);
-
-							// No cache entry - use HTTP
-							$http.get($router.current.views[id].content, { cache: true }).then(resolve).catch(reject);
-						}).then(function (data) {
-							return $element.html($compile(data)($rootScope.$new()));
-						}).then(function () {
-							return $timeout(function () {
-								return $rootScope.$broadcast('$routerSuccess', $router.current, id);
-							});
-						});
-						break;
-					default:
-						// if ($router.current.views[id].method) { // Throw an error if !undefined (if undefined, just clear up and do nothing)
-						throw new Error('View "' + id + '" has unknown router view method: "' + $router.current.views[id].method + '"');
-					// }
-				}
-			};
-
-			// Destroy the previous component (if any) and call createView() when done {{{
-			var elementChild = $element.children();
-			if (elementChild.length > 0) {
-				elementChild = angular.element(elementChild[0]);
-				if (elementChild.scope) {
-					// Destroy the previous component
-					$timeout(function () {
-						var scope = elementChild.scope();
-						scope.$apply(function () {
-							scope.$destroy();
-							createView();
-						});
-					});
-				} else {
-					createView();
-				}
-			} else {
-				createView();
-			}
-			// }}}
-		});
-	}]
-});
+};
