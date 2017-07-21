@@ -365,6 +365,8 @@ Generally the event progression when moving from rule `Foo` to rule `Bar` is:
 
 if any error occurs `$routerError(error)` will be emitted.
 
+if you are using one of the '*-debug' scripts `$routerDebug(message)` will also be emitted.
+
 
 $routerStart
 ------------
