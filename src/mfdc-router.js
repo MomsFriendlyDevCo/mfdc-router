@@ -346,6 +346,19 @@ module.exports = function() {
 		this.matches = (path, requires) => $q.promise((resolve, reject) => {
 			var segValues;
 
+			// @ifdef angular
+			// @ifdef debug
+			$rootScope.$emit('routerDebug',
+				'Examine rule ID=' + this._id + ', PATH=' + this._path,
+				'Matches...',
+				'path:', this._path.test(path),
+				'parameters:', (segValues = this.extractParams(path)),
+				'segments:', this._segments.every(seg => _.isFunction(seg.validator) ? seg.validator(segValues[seg.id]) : seg.validator),
+				'requires:', this._requires.length, 'to resolve',
+			);
+			// @endif
+			// @endif
+
 			if ( // Matches basic pathing rules (if no path pass though)
 				!this._path || // Either this rule doesnt have a path OR
 				(
@@ -408,7 +421,7 @@ module.exports = function() {
 			if (!this._path) return {};
 			var extracted = this._path.exec(path);
 			var params = {};
-			this._segments.forEach((seg,i) => params[seg.id] = extracted[i+1] ? extracted[i+1].replace(/^\//, '') : null);
+			this._segments.forEach((seg,i) => params[seg.id] = extracted && extracted[i+1] ? extracted[i+1].replace(/^\//, '') : null);
 			return params;
 		};
 
