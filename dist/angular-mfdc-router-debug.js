@@ -351,6 +351,10 @@ angular.module('angular-mfdc-router', []).service('$router', ['$location', '$q',
 			return $q(function (resolve, reject) {
 				var segValues;
 
+				$rootScope.$emit('routerDebug', 'Examine rule ID=' + _this._id + ', PATH=' + _this._path, 'Matches...', 'path:', _this._path.test(path), 'parameters:', segValues = _this.extractParams(path), 'segments:', _this._segments.every(function (seg) {
+					return _.isFunction(seg.validator) ? seg.validator(segValues[seg.id]) : seg.validator;
+				}), 'requires:', _this._requires.length, 'to resolve');
+
 				if ( // Matches basic pathing rules (if no path pass though)
 				!_this._path || // Either this rule doesnt have a path OR
 				_this._path.test(path) && ( // The patch matches AND

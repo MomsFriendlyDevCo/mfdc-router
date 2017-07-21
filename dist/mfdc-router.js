@@ -417,7 +417,7 @@ module.exports = function () {
 			var extracted = this._path.exec(path);
 			var params = {};
 			this._segments.forEach(function (seg, i) {
-				return params[seg.id] = extracted[i + 1] ? extracted[i + 1].replace(/^\//, '') : null;
+				return params[seg.id] = extracted && extracted[i + 1] ? extracted[i + 1].replace(/^\//, '') : null;
 			});
 			return params;
 		};
@@ -458,8 +458,8 @@ module.exports = function () {
 			return '!!!CAPTURE ' + (optional ? 'OPTIONAL' : 'REQUIRED') + '!!!';
 		}) // Change all :something? markers into tokens
 		.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\' + String.fromCharCode(36) + '&') // Convert all remaining content into a 'safe' string (regexp encoding)
-		.replace(/!!!CAPTURE OPTIONAL!!!/g, '(\\/.+)?') // Drop the capture groups back into the expression
-		.replace(/!!!CAPTURE REQUIRED!!!/g, '(\\/.+)'); // Drop the capture groups back into the expression
+		.replace(/!!!CAPTURE OPTIONAL!!!/g, '(\\/[^\/]+)?') // Drop the capture groups back into the expression
+		.replace(/!!!CAPTURE REQUIRED!!!/g, '(\\/[^\/]+)'); // Drop the capture groups back into the expression
 
 		return new RegExp('^' + safePath + String.fromCharCode(36));
 	};
