@@ -351,7 +351,7 @@ module.exports = function() {
 			$rootScope.$emit('routerDebug',
 				'Examine rule ID=' + this._id + ', PATH=' + this._path,
 				'Matches...',
-				'path:', this._path.test(path),
+				'path:', _.isRegExp(this._path) ? this._path.test(path) : 'NOTREGEXP',
 				'parameters:', (segValues = this.extractParams(path)),
 				'segments:', this._segments.every(seg => _.isFunction(seg.validator) ? seg.validator(segValues[seg.id]) : seg.validator),
 				'requires:', this._requires.length, 'to resolve',
