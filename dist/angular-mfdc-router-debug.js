@@ -351,7 +351,7 @@ angular.module('angular-mfdc-router', []).service('$router', ['$location', '$q',
 			return $q(function (resolve, reject) {
 				var segValues;
 
-				$rootScope.$emit('routerDebug', 'Examine rule ID=' + _this._id + ', PATH=' + _this._path, 'Matches...', 'path:', _this._path.test(path), 'parameters:', segValues = _this.extractParams(path), 'segments:', _this._segments.every(function (seg) {
+				$rootScope.$emit('routerDebug', 'Examine rule ID=' + _this._id + ', PATH=' + _this._path, 'Matches...', 'path:', _.isRegExp(_this._path) ? _this._path.test(path) : 'NOTREGEXP', 'parameters:', segValues = _this.extractParams(path), 'segments:', _this._segments.every(function (seg) {
 					return _.isFunction(seg.validator) ? seg.validator(segValues[seg.id]) : seg.validator;
 				}), 'requires:', _this._requires.length, 'to resolve');
 
