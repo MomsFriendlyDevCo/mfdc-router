@@ -30,9 +30,8 @@ angular
 				if (!$router.current) return; // Main route not loaded yet
 				var id = $ctrl.routeId || 'main';
 
-				if (!$router.current.views[id])  return;
-
 				var createView = function() {
+					if (!$router.current.views[id])  return; // Nothing to do
 					switch($router.current.views[id].method) {
 						case 'component':
 							var componentName = $router.current.views[id].content.replace(/([A-Z])/g, '_$1').toLowerCase(); // Convert to kebab-case
