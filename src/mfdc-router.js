@@ -370,7 +370,7 @@ module.exports = function() {
 				if (!this._requires.length || requires === false) return resolve();
 
 				$q.all(this._requires.map(r => {
-					var factoryReturn = r();
+					var factoryReturn = r(path, this);
 					if (factoryReturn === true) { // Respect true/false returns and map them to promise resolve / rejects
 						return $q.resolve();
 					} else if (factoryReturn === false) {
